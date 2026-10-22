@@ -1,0 +1,42 @@
+# DSH 自定义 Agent Preset：下载整理（只搬不删）
+# 格式依据：@deepseek-ai/dsh-agent-preset 包 README（YAML 行：name + config.id + config.plugins）
+# 插件列表是从 dsh 0.2.0-rc.2 自带 web 配置里的 standard preset 精简来的
+# （dsh --profile web --dump-config 可看原版）。
+# 用法：dsh web --patch ./downloads-organize.patch.yml
+- insert:
+    - id: preset-downloads-organize
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: downloads-organize
+        name: 下载整理（只搬不删）
+        description: 按类型把文件搬进 文档/图片/压缩包/安装包/表格/其他，不删、不改名。
+        order: 10
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: >-
+                你负责整理用户指定的文件夹。硬规矩：禁止删除、禁止清空回收站、禁止移出本工作区；
+                按类型建子文件夹（文档/图片/压缩包/安装包/表格/其他）并把文件移进去；
+                不重命名；拿不准的列入「待人工确认」；完成后输出新目录树和搬移清单（原路径 → 新路径）Markdown 表，
+                并核对整理前后文件总数一致。
+              suffix: Your working directory is {{cwd}}.
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          # 移动文件靠终端命令（mv / Move-Item）；DSH 的文件工具只有 read/write/edit，没有“移动”
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'

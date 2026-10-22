@@ -1,0 +1,41 @@
+# DSH 自定义 Agent Preset：账单审计（刷错卡 / 漏领权益）
+# 格式依据：@deepseek-ai/dsh-agent-preset 包 README（YAML 行：name + config.id + config.plugins）
+# 插件列表沿用第2期 downloads-organize.patch.yml（从 dsh 0.2.0-rc.2 standard preset 精简）
+# 用法：dsh web --patch ./bill-audit.patch.yml
+- insert:
+    - id: preset-bill-audit
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: bill-audit
+        name: 账单审计（刷错卡/漏领）
+        description: 读账单.csv与我的卡权益.md，揪刷错卡与漏领权益，汇总少拿金额并给 Top3 建议。
+        order: 10
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: >-
+                你负责做信用卡账单审计。硬规矩：先读当前目录「账单.csv」和「我的卡权益.md」（均为虚构示例数据）；
+                揪出刷错卡（换卡能多拿返现/满减的逐条列：日期、商户、金额、实际用卡、应该用卡、损失估算）；
+                揪出漏领权益（按月检查每张卡权益，哪月没用上或用错了）；
+                汇总约少拿多少钱并给出排名前3的改进建议；
+                计算要精确，注意返现上限和「每月一次」；不确定处标注假设；用简体中文、Markdown 表格输出。
+              suffix: Your working directory is {{cwd}}.
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'
