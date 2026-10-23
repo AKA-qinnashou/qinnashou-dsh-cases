@@ -35,7 +35,7 @@
 | `screenshots/S6b_跑完界面.png` | 演示：跑完（16 条 / 1分51秒） |
 | `screenshots/S7_待确认栏.png` | 演示：待确认栏 |
 | `screenshots/配图_workflow-16x9.png` | 公号配图：工作流（非操作步骤） |
-| `screenshots/配图_mascot-spot-16x9.png` | 公号配图：奶油球点缀（非操作步骤） |
+| `screenshots/配图_mascot-spot-16x9.png` | 公号配图：奶油球场景图（非操作步骤；正文不写点缀/Designer 元说明） |
 | `MANIFEST.md` | 本清单（交确认用；未推送） |
 
 ---
