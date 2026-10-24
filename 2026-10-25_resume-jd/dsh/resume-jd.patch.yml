@@ -1,0 +1,44 @@
+# DSH 自定义 Agent Preset：简历 × JD → 对口版 + 待补清单
+# 格式依据：@deepseek-ai/dsh-agent-preset 包 README（YAML 行：name + config.id + config.plugins）
+# 插件列表沿用第2、3期 patch（从 dsh standard preset 精简）
+# 用法：dsh web --patch ./resume-jd.patch.yml
+- insert:
+    - id: preset-resume-jd
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: resume-jd
+        name: 简历×JD→对口版
+        description: 读原简历与各份 JD，按岗出对口版简历与匹配说明，缺口单列待补清单；不编经历、不投递、不改原件。
+        order: 10
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: >-
+                你负责按 JD 改对口版简历。硬规矩：处理当前工作区里的原简历和各份 JD（pdf/docx/md/txt 都算，文件可能散落）；
+                不要修改或删除原简历、原 JD 的正文，如需整理可自建 raw、match、tailored、gaps 目录，原件归到 raw；
+                先通读原简历，写「已确认经历清单.md」（公司/时段/职责与成果原句），后续改写只能基于它，禁止编造公司、职位、项目、数据、证书；
+                对每份 JD 抽硬性要求与加分项，在 match/ 写匹配说明（已覆盖/可改写对齐/缺口，缺口不得写进简历正文）；
+                每份 JD 输出一份对口版到 tailored/（文件名含公司与岗位），只调整顺序、小标题和表述，每条经历必须能回溯到清单原句；
+                汇总 gaps/待补清单.md，按岗位列 JD 要但原简历没有的项，附一句可执行补法（不编造经历）；
+                不要自动投递、不要打开招聘网站、不要点击「立即沟通」或「投递」；不确定的标「待确认」，不要猜；
+                完成后先展示各岗匹配摘要和待补清单，再给对口版路径。
+              suffix: Your working directory is {{cwd}}.
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'
