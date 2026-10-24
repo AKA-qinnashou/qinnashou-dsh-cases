@@ -39,6 +39,9 @@ PDF、图片、表格、压缩包、安装包、音视频，带中文名、空�
 |---|---|
 | `prompt.md` | 整理提示词原文，哪个平台都能贴 |
 | `分类规则.md` | 什么扩展名进哪个夹 |
+| `demo-下载/` | 虚构下载文件夹：51 个小占位文件，复现用 |
+| `sample/` | DSH 实跑整理后的样子 + `整理报告.md` |
+| `MANIFEST.md` | 本期文件清单 + 待核 |
 | `dsh/` | DeepSeek Harness（DSH）专用配置 |
 | `trae/` | Trae 专用配置 |
 | `doubao/` | 豆包专用步骤 |
@@ -80,6 +83,53 @@ PDF、图片、表格、压缩包、安装包、音视频，带中文名、空�
 豆包原来的「创建智能体」已经下线了。现在走「豆包工作」：
 新工作任务 → 运行环境选「本地电脑」→ 项目里选你的文件夹 → 贴提示词。
 细节看 `doubao/工作任务配置.md`。
+
+## 复现（给 agent）
+
+`sample/` 来自 DSH 实跑（2026-10-24 冷启动，`dsh headless` 默认模型）：六个子文件夹 + `整理报告.md`；占位文件为虚构。
+
+它在终端里跑，不开 GUI。先读仓根 `AGENTS.md`。`demo-下载/` 是虚构的下载文件夹：51 个小占位文件，名字照截图 07/08 的演示口径。
+
+```bash
+git clone https://github.com/AKA-qinnashou/qinnashou-dsh-cases.git   # 用户给了别的地址就克隆那个
+C=$PWD/qinnashou-dsh-cases/2026-10-22_downloads-organize
+W=$(mktemp -d)
+cp -p "$C"/demo-下载/* "$W/"            # 工作区本身就是「下载文件夹」
+cp "$C/dsh/AGENTS.md" "$W/"
+npm install -g @deepseek-ai/dsh          # 要 Node ≥ 22.18
+export DEEPSEEK_API_KEY=YOUR_API_KEY   # 人给；没有就停
+cd "$W" && dsh headless "$(sed 's/\[绝对路径或相对\.\]/./' "$C/prompt.md")"
+```
+
+跑完对照（对结构，不对措辞）：
+
+```bash
+cd "$W"
+find . -type f ! -name AGENTS.md ! -name 整理报告.md | wc -l      # 必须 = 51
+ls "$C/demo-下载" | while IFS= read -r f; do
+  n=$(find . -type f -name "$f" | head -1)
+  [ -n "$n" ] && cmp -s "$C/demo-下载/$f" "$n" || echo "缺或变：$f"
+done                                                           # 必须无输出
+```
+
+- 子文件夹和 `sample/` 一致：文档(18) / 图片(10) / 压缩包(4) / 安装包(7) / 表格(7) / 其他(5)；放进「待人工确认」的允许个别出入，但要在报告里列明。
+- 根目录有 `整理报告.md`：新目录树 + 搬移清单（原路径 → 新路径）。
+- 文件名一个没改。
+
+`dsh/downloads-organize.patch.yml` 在 headless 下**不生效**，规矩靠拷进去的 `AGENTS.md`。默认模型 `deepseek-flash`，换模型见仓根 `AGENTS.md` 第 6 步。
+
+### 人工步骤
+
+1. 建 DeepSeek API key 交给它（或自己 export）。
+2. 想看图形界面：自己开桌面端或 `dsh web`。
+3. 整理真下载文件夹前，自己先备份；「待人工确认」里的自己拍板。
+
+## 验收
+
+1. 文件总数前后都是 51，无删除。
+2. 每个原文件按名找得到，`cmp` 一致，名字没改。
+3. 六个子文件夹齐，归类符合 `分类规则.md`。
+4. `整理报告.md` 有新目录树 + 搬移清单。
 
 ## 收工前数一遍
 

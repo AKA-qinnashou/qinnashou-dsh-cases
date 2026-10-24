@@ -88,6 +88,44 @@
 新工作任务 → 运行环境选「本地电脑」→ 项目里选你的文件夹 → 贴提示词。
 细节看 `doubao/工作任务配置.md`。
 
+## 复现（给 agent）
+
+`sample/` 为本期演示产出（纪要虚构）；2026-10-24 冷启动 `dsh headless` 实跑结构与之一致。
+
+它在终端里跑，不开 GUI。先读仓根 `AGENTS.md`。
+
+```bash
+git clone https://github.com/AKA-qinnashou/qinnashou-dsh-cases.git   # 用户给了别的地址就克隆那个
+C=$PWD/qinnashou-dsh-cases/2026-10-24_meeting-todo
+W=$(mktemp -d)
+cp "$C"/demo-input-*.md "$W/"            # 虚构纪要，原名照拷（和 sample/ 对得上）
+cp "$C/dsh/AGENTS.md" "$W/"
+npm install -g @deepseek-ai/dsh          # 要 Node ≥ 22.18
+export DEEPSEEK_API_KEY=YOUR_API_KEY   # 人给；没有就停
+cd "$W" && dsh headless "$(cat "$C/prompt.md")"
+```
+
+跑完对照（对结构，不对措辞）：
+
+- 结构：`meetings/raw/`(2)、`meetings/summaries/`(2，同名 .md)、`tasks/今日待办.md`，和 `sample/` 一致。
+- 原件没动：`for f in demo-input-1.md demo-input-2.md; do cmp "$C/$f" "$W/meetings/raw/$f"; done`。
+- `今日待办.md` 有【高】【中】【低】分组和「待确认」栏；条数可和演示不同。
+
+`dsh/meeting-todo.patch.yml` 在 headless 下**不生效**，规矩靠拷进去的 `AGENTS.md`。默认模型 `deepseek-flash`，换模型见仓根 `AGENTS.md` 第 6 步。
+
+### 人工步骤
+
+1. 建 DeepSeek API key 交给它（或自己 export）。
+2. 想看图形界面：自己开桌面端或 `dsh web`。
+3. 飞书妙记 / 腾讯会议导出纪要自己点；真会议先脱敏；「待确认」自己对着会上过，派活自己发。
+
+## 验收
+
+1. 结构和 `sample/` 一致。
+2. `raw/` 原件 `cmp` 一致。
+3. 每条待办有事项 / 负责人 / 截止 / 来源；没提到的写「未提及」，没编。
+4. 负责人不清的在「待确认」，没被猜成某人。
+
 ## 收工前对一遍
 
 1. 「待确认」栏对着会上过一遍，别直接派活。

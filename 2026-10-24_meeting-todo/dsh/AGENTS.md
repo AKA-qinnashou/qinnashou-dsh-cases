@@ -11,3 +11,5 @@
 - 负责人没说清的，单列「待确认」，不要猜。
 - 不要修改或删除任何原始纪要/录音转写稿的正文。
 - 干完把待办清单直接展示出来。
+- 产出文件（报告、摘要、清单、简历等）新建用 write 工具，改用 edit 工具；不要用 bash 的 cat/echo/heredoc/python 写产出文件。搬文件、建目录可以用 bash。
+- 原件用 `mv` 归进 `meetings/raw/`，**不改名**、不留副本；摘要文件名和原件同名（如 `raw/demo-input-1.md` → `summaries/demo-input-1.md`）。

@@ -1,10 +1,10 @@
 # 第3期备料清单 · `2026-10-24_meeting-todo`
 
-状态：**本地已备，未 push。**
+状态：**冷启动已跑通**：2026-10-24（Asia/Shanghai）真 key、干净会话、只给一句「照这个仓库复现第3期 file://<副本>」，`dsh headless` 实跑，产出由 DSH 的 write/edit 工具写，结构对 `sample/`、原件 `cmp` 一致。本次提交推送（commit 见 `git log`）。
 公开仓（已存在、已关联）：`AKA-qinnashou/qinnashou-dsh-cases`（远端 `origin` → `https://github.com/AKA-qinnashou/qinnashou-dsh-cases.git`）。
-本期子目录与仓根索引更新仅落盘本地；**等大哥确认后再 push**。未联系大哥。
+本期正文早已在远端（`548effb` 之前）；本次补「复现（给 agent）」「人工步骤」「验收」。
 
-生成时间：2026-10-23（Asia/Shanghai）。
+生成时间：2026-10-23（Asia/Shanghai）；2026-10-24 更新。
 
 ---
 
@@ -36,7 +36,7 @@
 | `screenshots/S7_待确认栏.png` | 演示：待确认栏 |
 | `screenshots/配图_workflow-16x9.png` | 公号配图：工作流（非操作步骤） |
 | `screenshots/配图_mascot-spot-16x9.png` | 公号配图：奶油球场景图（非操作步骤；正文不写点缀/Designer 元说明） |
-| `MANIFEST.md` | 本清单（交确认用；未推送） |
+| `MANIFEST.md` | 本清单 |
 
 ---
 
@@ -55,7 +55,7 @@
 9. **豆包**原「创建智能体」下线依据为第三方报道（2026-07-15），非官方公告页——待核（是否改 README 措辞）。
 10. **模型角标** DeepSeek-V41-Flash High 对外是否统一口径——待核（沿用第1期待核）。
 11. **S1 截图**：实测在已进入工作区目录内启动，未再弹出「选择工作区目录」对话框——缺该步独立截图是否要补——待核（见源 `实测结果.md`）。
-12. **本期是否 push / 是否写入公开仓 README 索引**——待大哥确认（本清单未 push）。
+12. `sample/` 是否为当初演示 DSH 原样产出——待核（冷启动实跑结构与之一致）。
 
 ---
 
@@ -67,6 +67,6 @@
 
 ## 禁做事项（本轮已遵守）
 
-- 未 `gh repo create`；未 `git push`；未对远端做未经确认的操作。
+- 未 `gh repo create`；推送只走一次普通 commit + `git push origin main`，无 force。
 - 未写入真 API key；文案统一 `YOUR_API_KEY`。
 - 未把公号全文当作 README 唯一内容；未纳入内部备注、口播、真机隐私等非作品集必需文件。

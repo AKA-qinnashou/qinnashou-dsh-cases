@@ -43,6 +43,8 @@
 | `prompt.md` | 审计提示词原文，哪个平台都能贴 |
 | `账单.csv` | 虚构示例账单 |
 | `我的卡权益.md` | 虚构卡权益说明 |
+| `sample/审计报告.md` | DSH 实跑产出样例 |
+| `MANIFEST.md` | 本期文件清单 + 待核 |
 | `dsh/` | DeepSeek Harness（DSH）专用配置 |
 | `trae/` | Trae 专用配置 |
 | `doubao/` | 豆包专用步骤 |
@@ -86,6 +88,45 @@
 豆包原来的「创建智能体」已经下线了。现在走「豆包工作」：
 新工作任务 → 运行环境选「本地电脑」→ 项目里选你的文件夹 → 贴提示词。
 细节看 `doubao/工作任务配置.md`。
+
+## 复现（给 agent）
+
+`sample/审计报告.md` 来自 DSH 实跑（2026-10-24 冷启动，`dsh headless` 默认模型），输入样本为虚构。
+
+它在终端里跑，不开 GUI。先读仓根 `AGENTS.md`。
+
+```bash
+git clone https://github.com/AKA-qinnashou/qinnashou-dsh-cases.git   # 用户给了别的地址就克隆那个
+C=$PWD/qinnashou-dsh-cases/2026-10-21_bill-audit
+W=$(mktemp -d)
+cp "$C/账单.csv" "$C/我的卡权益.md" "$W/"     # 虚构样本，原名照拷
+cp "$C/dsh/AGENTS.md" "$W/"
+npm install -g @deepseek-ai/dsh          # 要 Node ≥ 22.18
+export DEEPSEEK_API_KEY=YOUR_API_KEY   # 人给；没有就停
+cd "$W" && dsh headless "$(cat "$C/prompt.md")"
+```
+
+跑完对照（对结构，不对措辞）：
+
+- `$W` 下多出 `审计报告.md`，和 `sample/审计报告.md` 一样有三块：刷错卡表、漏领权益表、汇总 + Top3 建议，另有假设说明。
+- 原件没动：`cmp "$C/账单.csv" "$W/账单.csv" && cmp "$C/我的卡权益.md" "$W/我的卡权益.md"`。
+- 数字不要求和演示一字不差（模型每次算法可能不同），按下面「验收」抽查。
+
+`dsh/bill-audit.patch.yml` 在 headless 下**不生效**，规矩靠拷进去的 `AGENTS.md`；预设只在 `dsh web` / 桌面端用。默认模型 `deepseek-flash`，换模型见仓根 `AGENTS.md` 第 6 步。
+
+### 人工步骤
+
+1. 建 DeepSeek API key 交给它（或自己 export）。
+2. 想看图形界面：自己开桌面端或 `dsh web`，按上面「DSH」节点选。
+3. 换真账单前先自己脱敏；改绑卡、办卡自己去银行 App。
+
+## 验收
+
+1. `审计报告.md` 存在，三块齐（刷错卡 / 漏领权益 / 汇总 + Top3）。
+2. 刷错卡表抽 3 条手算，损失金额对得上。
+3. 「每月一次」「返现上限」没算爆；汇总和分表对得上。
+4. 不确定处标了假设。
+5. 原件 `cmp` 一致。
 
 ## 收工前对一遍
 
