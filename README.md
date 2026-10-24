@@ -1,5 +1,7 @@
 # DSH 实践案例（秦拿手）
 
+> 让 agent 复现：先读 [`AGENTS.md`](AGENTS.md)。
+
 这个仓放公号里跑过的 DeepSeek Harness（DSH）实践。
 一篇实践一个子目录。提示词、配置、截图、示例数据都在对应目录里。
 

@@ -1,7 +1,8 @@
 # 第4期备料清单 · `2026-10-25_resume-jd`
 
-状态：**本地已备、未推送。** 未 commit、未 push。
-远端：`AKA-qinnashou/qinnashou-dsh-cases`。远端已有 commit `6a8f3b0`（不合格：只搬了公号内容、缺平台配置），本次在本地工作区重做，覆盖它。
+状态：**正文已推送**，在 `4b9ede6`（与 origin/main 一致）。**复现文档的补丁只在本地、未推送**：仓根 `AGENTS.md`（新文件）、仓根 `README.md`、本期 `README.md` 和本清单都还在工作区，没有 commit、没有 push。
+远端：`AKA-qinnashou/qinnashou-dsh-cases`。早先的 `6a8f3b0` 不合格，`4b9ede6` 在它之上补齐、取代了它的内容。
+冷启动复现：2026-10-24 用真 key、干净环境、`dsh headless` 跑通，结构与 `sample/` 一致，原件未改。
 生成时间：2026-10-24（Asia/Shanghai）。
 
 ## 文件清单
@@ -50,7 +51,7 @@
 6. 豆包「创建智能体」下线仅有第三方报道——待核。依据：https://www.sohu.com/a/1045721026_313745
 7. 模型角标 DeepSeek-V41-Flash High 对外口径——待核（沿用第1期）。依据：screenshots/S1、S5 界面
 8. 未补第四个平台：本轮未取得足够官方文档依据——待核。
-9. 是否 commit / push 覆盖远端 6a8f3b0——待大哥确认。
+9. 复现文档的本地补丁（AGENTS.md 等）是否 commit / push——待大哥确认。
 
 ## 示例数据说明
 
@@ -60,4 +61,4 @@
 
 ## 禁做（本轮已遵守）
 
-未 commit、未 push、未建仓、无远端写操作。未放公号正文、公号配图。
+复现补丁未 commit、未 push，没有远端写操作。未放公号正文、公号配图。

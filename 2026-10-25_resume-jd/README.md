@@ -81,6 +81,38 @@
 
 本流程未在豆包实测。
 
+## 复现（给 agent）
+
+它在终端里跑，不开 GUI。先读仓根 `AGENTS.md`。
+
+```bash
+git clone https://github.com/AKA-qinnashou/qinnashou-dsh-cases.git   # 用户给了别的地址就克隆那个
+C=qinnashou-dsh-cases/2026-10-25_resume-jd
+W=$(mktemp -d)
+for f in "$C"/demo-*.md; do b=$(basename "$f"); cp "$f" "$W/${b#demo-}"; done
+cp "$C/dsh/AGENTS.md" "$W/"
+npm install -g @deepseek-ai/dsh          # 要 Node ≥ 22.18
+export DEEPSEEK_API_KEY=YOUR_API_KEY   # 人给；没有就停
+cd "$W" && dsh headless "$(sed -n '/^```$/,/^```$/p' "$OLDPWD/$C/prompt.md" | sed '1d;$d')"
+```
+
+跑完对照：
+
+- 结构：`$W` 下有 `已确认经历清单.md`、`raw/`(4)、`match/`(3)、`tailored/`(3)、`gaps/待补清单.md`，和 `sample/` 一致。文件名措辞可不同。
+- 内容：按下面「验收」5 条过。
+- `raw/` 原件和 `demo-*` 逐字节一致：`diff` 一下。
+
+模型：演示用 DeepSeek-V41-Flash High。headless 默认用 `deepseek-flash`（DeepSeek-V4.1-Flash），reasoningEffort 为 high。要换模型，用 `--patch` 覆盖 `agent-default-model` 的 `config.model`，例如改成 `deepseek-v4-pro`；写法见仓根 `AGENTS.md` 第 6 步。
+`--patch ./resume-jd.patch.yml` 在 headless 下**不生效**：headless 不组合 agent preset，实测会话里没有任何该预设的痕迹。所以 headless 靠 `AGENTS.md` 定规矩，预设只在 `dsh web` 或桌面端里用。
+
+实测冷启动（2026-10-24，干净环境，DSH 0.2.1-rc.2，Node 22.21）：dsh headless 本身用时约 3 分 21 秒，结构与 `sample/` 一致，`raw/` 4 份原件逐字节未变。
+
+### 人工步骤
+
+1. 建 DeepSeek API key 交给它（或自己 export）。
+2. 想看图形界面：自己开桌面端或 `dsh web`，按上面「DSH」节点选。
+3. 换真简历前先自己脱敏；投递自己点。
+
 ## 验收
 
 1. 对口版每一条，在 `已确认经历清单.md` 里找得到原句。找不到就删。
